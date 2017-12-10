@@ -1,0 +1,39 @@
+\documentclass{article}
+\usepackage{try}
+\begin{document}
+\pagestyle{empty}
+
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20,
+text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{io} = [rectangle, draw, fill=red!20,
+text width=5em, text centered, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+minimum height=2em]
+
+\begin{tikzpicture}[node distance = 4cm, auto]
+% Place nodes
+\node [cloud] (init) {begin};
+\node [io, below of=init] (input) {read( a b c )};
+\node [decision, below of=input] (if) { $ ((\sqrt(a) \leq b) \&\& (a \leq c)) $ };
+\node [io, right of= if] (output) {write( a )};
+\node [block, left  of= if] (do1) {c = $ sqrt(b) $};
+\node [block, below  of= do1] (do2) {a = b};
+\node [block, below  of= do2] (do3) {b = c};
+\node [cloud, below of=output, node distance=3cm] (stop) {stop};
+% Draw edges
+\path [line] (init) -- (input);
+\path [line] (input) -- (if);
+\path [line] (if) -- node {yes} (output);
+\path [line] (if) -- node {no}(do1);
+\path [line] (do1) -- (do2);
+\path [line] (do2) -- (do3);
+\path [line] (do3) -| (if);
+\path [line] (output) -- (stop);
+\end{tikzpicture}
+
+
+\end{document}
