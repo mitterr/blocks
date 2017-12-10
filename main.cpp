@@ -35,8 +35,8 @@ map<int, double> var;
 bool correct = 1;
 void dfs(string name)
 {
-  //  cout << var['a'] << " " << var['b'] << " " << var['c'] << "\n";
-  //  cout << name << "\n";
+    //  cout << var['a'] << " " << var['b'] << " " << var['c'] << "\n";
+    //  cout << name << "\n";
     if(!correct) return;
     //cout << name << "\n";
     if(block[name].type == "cloud")
@@ -47,7 +47,7 @@ void dfs(string name)
     if(block[name].type == "io")
     {
         string y = block[name].opr;
-        if(y[0] == 'r')
+        if(y.find("read") < 10000)
             for(int i = 0;  i < y.size(); i++)
             {
                 if(y[i] == '(')
@@ -56,7 +56,7 @@ void dfs(string name)
                     while(y[i] != ')')
                     {
                         i++;
-                        if(y[i] != ' ' && y[i] != ')')
+                        if(y[i] != ' ' && y[i] != ',' && y[i] != ')')
                         {
                             c = y[i];
                             double p;
@@ -72,6 +72,11 @@ void dfs(string name)
             }
         else
         {
+            if(y.find("write") >= 10000)
+            {
+                correct = 0;
+                return;
+            }
             for(int i = 0;  i < y.size(); i++)
             {
                 if(y[i] == '(')
@@ -80,7 +85,7 @@ void dfs(string name)
                     while(y[i] != ')')
                     {
                         i++;
-                        if(y[i] != ' ' && y[i] != ')')
+                        if(y[i] != ' ' && y[i] != ')' && y[i] != ',')
                         {
                             c = y[i];
                             double p;
@@ -120,16 +125,16 @@ void dfs(string name)
         }
         string sss ;
         sss.pb(left);
-       // cout << right << "\n";
+        // cout << right << "\n";
         parser.DefineVar( sss, &var[left]);
         if(correct)
-        try
+            try
         {
             parser.SetExpr(right);
             var[left] = parser.Eval();
         } catch (Parser:: exception_type &e)
         {
-         //  if(correct) cout << "INCORRECT INPUT!\n";
+            //  if(correct) cout << "INCORRECT INPUT!\n";
             correct = 0;
             return;
         }
@@ -143,7 +148,7 @@ void dfs(string name)
             if(block[name].opr[i] != '$') y.pb(block[name].opr[i]);
         }
         bool flag = 0;
-       // y+= "####";
+        // y+= "####";
         string left;
         string right;
         string znak;
@@ -178,23 +183,23 @@ void dfs(string name)
         }
         y = t;
         int ok = 0;
-      //  cout << y <<"\n";
+        //  cout << y <<"\n";
         try
         {
             parser.SetExpr(y);
-          //  cout << y << "\n";
+            //  cout << y << "\n";
             ok = parser.Eval();
-          //  cout << "ok =" << ok << "\n";
+            //  cout << "ok =" << ok << "\n";
         }
         catch (Parser:: exception_type &e)
         {
-          //  if(correct) cout << y<<"\n";
+            //  if(correct) cout << y<<"\n";
             correct = 0;
             return;
         }
         if(correct)
-        dfs(g[name][(int)(ok ^ 1)]);
-       
+            dfs(g[name][(int)(ok ^ 1)]);
+        
     }
     
 }
@@ -207,7 +212,7 @@ int main()
     ifstream fin;
     string fname;
     fin.open("shema.tex");
- //   freopen("/Users/mitterr/Desktop/block-scheme/block-scheme/shema.tex" , "r" , stdin);
+    //   freopen("/Users/mitterr/Desktop/block-scheme/block-scheme/shema.tex" , "r" , stdin);
     string s;
     bool flag = 0;
     int unt = 0;
@@ -215,7 +220,7 @@ int main()
     while(getline(fin , s))
     {
         unt++;
-
+        
         if(s.find("\\node") < 10000)
         {
             node x;
@@ -281,14 +286,14 @@ int main()
                         u = p;
                         flag = 1;
                     }
-                  //  cout << u << "\n";
+                    //  cout << u << "\n";
                     if(flag && block[u].type == "decision")
                     {
-                      if(s.find("yes") < 10000)
-                      {
-                          //cout << u << " " << unt << "\n";
-                          ord[u].first = unt;
-                      }
+                        if(s.find("yes") < 10000)
+                        {
+                            //cout << u << " " << unt << "\n";
+                            ord[u].first = unt;
+                        }
                         if(s.find("{no}") < 10000)
                         {
                             //cout << u << " " << unt << "\n";
@@ -319,11 +324,11 @@ int main()
                     g[u].pb(v);
             }
     }
-//    for(auto i : block)
-//    {
-//        cout << i.first << " " << i.second.type << " " << i.second.opr << "\n";
-//    }
-//    cout << "-------------------------------------------\n";
+    //    for(auto i : block)
+    //    {
+    //        cout << i.first << " " << i.second.type << " " << i.second.opr << "\n";
+    //    }
+    //    cout << "-------------------------------------------\n";
     for(auto i : names)
     {
         if(block[i].type == "decision")
@@ -331,7 +336,7 @@ int main()
             
             if(ord[i].first > ord[i].second)
             {
-             //   cout << i << "\n";
+                //   cout << i << "\n";
                 swap(g[i][0] , g[i][1]);
             }
         }
@@ -373,12 +378,12 @@ int main()
     {
         cout << "INCORRECT INPUT!\n";
         return 0;
-
+        
     }
- //   dfs("do");
- //   dfs("if");
+    //   dfs("do");
+    //   dfs("if");
     //cout << var['a'] << " " << var['b'] << " " << var['c'] << "\n";
- //   dfs("output");
+    //   dfs("output");
     //cout << var['a'] << " " << var['b'] << " " << var['c'] << "\n";
     return 0;
 }
